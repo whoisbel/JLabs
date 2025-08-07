@@ -14,6 +14,7 @@ export default function Home() {
   const [geoResult, setGeoResult] = useState(null);
   const [history, setHistory] = useState([]);
   const [selected, setSelected] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const headers = { Authorization: `Bearer ${token}` };
 
@@ -22,13 +23,16 @@ export default function Home() {
 
     (async () => {
       try {
+        setLoading(true);
         const ip = (await axios.get('https://api.ipify.org?format=json')).data.ip;
         const geo = await axios.post('http://localhost:3000/api/geo', { ip }, { headers });
         setOwnGeo(geo.data);
         setGeoResult(geo.data);
-        loadHistory();
+        await loadHistory();
       } catch (err) {
         console.error('Failed to load IP info', err);
+      } finally {
+        setLoading(false);
       }
     })();
   }, []);
@@ -45,11 +49,14 @@ export default function Home() {
   const handleSearch = async () => {
     if (!inputIP || !/^(\d{1,3}\.){3}\d{1,3}$/.test(inputIP)) return alert('Invalid IP');
     try {
+      setLoading(true);
       const res = await axios.post('http://localhost:3000/api/geo/search', { ip: inputIP }, { headers });
       setGeoResult(res.data);
-      loadHistory();
+      await loadHistory();
     } catch {
       alert('Failed to fetch geo data');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,17 +68,19 @@ export default function Home() {
   const handleDeleteSelected = async () => {
     if (selected.length === 0) return;
     try {
-        await axios.delete('http://localhost:3000/api/geo/history/multiple', {
+      setLoading(true);
+      await axios.delete('http://localhost:3000/api/geo/history/multiple', {
         headers,
         data: { ids: selected },
-        });
-        await loadHistory();
-        setSelected([]);
+      });
+      await loadHistory();
+      setSelected([]);
     } catch {
-        alert('Failed to delete selected items');
+      alert('Failed to delete selected items');
+    } finally {
+      setLoading(false);
     }
-    };
-
+  };
 
   const toggleSelect = (id) => {
     setSelected((prev) =>
@@ -86,10 +95,13 @@ export default function Home() {
 
   const handleHistoryClick = async (ip) => {
     try {
+      setLoading(true);
       const res = await axios.post('http://localhost:3000/api/geo/search', { ip }, { headers });
       setGeoResult(res.data);
     } catch {
       alert('Failed to fetch geo data');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -129,20 +141,25 @@ export default function Home() {
           placeholder="Enter IP"
           value={inputIP}
           onChange={(e) => setInputIP(e.target.value)}
+          disabled={loading}
         />
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded"
           onClick={handleSearch}
+          disabled={loading}
         >
-          Search
+          {loading ? 'Searching...' : 'Search'}
         </button>
         <button
           className="bg-gray-300 px-4 py-2 rounded"
           onClick={handleClearSearch}
+          disabled={loading}
         >
           Clear
         </button>
       </div>
+
+      {loading && <p className="mb-4 text-gray-600 italic">Loading...</p>}
 
       {geoResult?.loc && <GeoMap loc={geoResult.loc} />}
 
@@ -159,8 +176,9 @@ export default function Home() {
           <button
             className="mb-2 bg-red-500 text-white px-4 py-1 rounded"
             onClick={handleDeleteSelected}
+            disabled={loading}
           >
-            Delete Selected
+            {loading ? 'Deleting...' : 'Delete Selected'}
           </button>
         )}
         <ul className="space-y-1">
@@ -171,6 +189,7 @@ export default function Home() {
                 type="checkbox"
                 checked={selected.includes(h.id)}
                 onChange={() => toggleSelect(h.id)}
+                disabled={loading}
               />
               <span
                 className="cursor-pointer text-blue-600 hover:underline"
