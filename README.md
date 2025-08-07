@@ -19,27 +19,23 @@ Simple app to search IP address locations with map and history.
 
 ## Setup without Docker (Development Mode)
 
-1. Install root dependencies (for scripts):
-
-   npm install
-
-2. Install all dependencies (root, backend, and frontend):
+1. Install all dependencies (root, backend, and frontend):
 
    npm run install-all
 
-3. Generate Prisma client and apply database migrations:
+2. Generate Prisma client and apply database migrations:
 
    npm run prisma:setup
 
-4. Seed the database with a sample user:
+3. Seed the database with a sample user:
 
    npm run seed
 
-5. Start both frontend and backend servers:
+4. Start both frontend and backend servers:
 
    npm run dev
 
-6. Open in browser:
+5. Open in browser:
 
    - Frontend: http://localhost:5173  
    - Backend: http://localhost:3000
