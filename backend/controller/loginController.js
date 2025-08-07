@@ -1,22 +1,33 @@
-import db from '../db.js';
+import prisma from '../db.js';
+import bcrypt from 'bcrypt';
 import { generateAccessToken } from '../utils/jwt.js';
 
-export default function loginController(req, res) {
+export default async function loginController(req, res) {
   const { username, password } = req.body;
 
   if (!username || !password) {
     return res.status(400).json({ error: 'Missing credentials' });
   }
 
-  db.get(
-    'SELECT * FROM users WHERE username = ? AND password = ?',
-    [username, password],
-    (err, user) => {
-      if (err) return res.status(500).json({ error: 'Database error' });
-      if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+  try {
+    const user = await prisma.user.findUnique({
+      where: { username },
+    });
 
-      const token = generateAccessToken({ id: user.id, username: user.username });
-      res.json({ message: 'Login successful', token });
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
-  );
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const token = generateAccessToken({ id: user.id, username: user.username });
+    res.json({ message: 'Login successful', token });
+
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 }
