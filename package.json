@@ -3,10 +3,17 @@
   "version": "1.0.0",
   "scripts": {
     "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "prisma:setup": "cd backend && npx prisma generate && npx prisma migrate deploy",
+    "seed": "cd backend && node seed.js",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd backend && node app.js",
-    "client": "cd frontend && npm run dev"
+    "client": "cd frontend && npm run dev",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
+    "docker:up:dev": "docker-compose up --build",
+    "docker:down": "docker-compose down"
   },
+
   "devDependencies": {
     "concurrently": "^8.2.0"
   }
