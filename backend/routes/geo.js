@@ -12,7 +12,6 @@ const geoRouter = Router();
 
 geoRouter.post('/geo', authenticateToken, getOwnGeoInfo);
 geoRouter.post('/geo/search', authenticateToken, getGeoByIP);
-geoRouter.delete('/geo/history', authenticateToken, clearSearchHistory);
 geoRouter.get('/geo/history', authenticateToken, getSearchHistory);
 geoRouter.delete('/geo/history/multiple', authenticateToken, deleteMultipleHistory);
 export default geoRouter;

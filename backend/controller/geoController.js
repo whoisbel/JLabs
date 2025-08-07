@@ -89,21 +89,6 @@ export async function getSearchHistory(req, res) {
   }
 }
 
-export async function clearSearchHistory(req, res) {
-  const userId = req.user.id;
-
-  try {
-    await prisma.history.deleteMany({
-      where: { user_id: userId },
-    });
-
-    res.json({ message: 'Search history cleared' });
-  } catch (err) {
-    console.error('Clear history error:', err);
-    res.status(500).json({ error: 'Failed to clear history' });
-  }
-}
-
 export async function deleteMultipleHistory(req, res) {
   const userId = req.user.id;
   const { ids } = req.body;
