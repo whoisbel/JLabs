@@ -6,32 +6,40 @@ Simple app to search IP address locations with map and history.
 
 1. Build and run the frontend and backend:
 
-   docker-compose up --build
+   npm run docker:up:dev
 
 2. Open in browser:
 
    - Frontend: http://localhost:3001  
    - Backend: http://localhost:3000
 
+3. To stop the containers:
+
+   npm run docker:down
+
 ## Setup without Docker (Development Mode)
 
-1. Install all dependencies (root, backend, and frontend):
+1. Install root dependencies (for scripts):
+
+   npm install
+
+2. Install all dependencies (root, backend, and frontend):
 
    npm run install-all
 
-2. Generate Prisma client and apply database migrations:
+3. Generate Prisma client and apply database migrations:
 
    npm run prisma:setup
 
-3. Seed the database with a sample user:
+4. Seed the database with a sample user:
 
    npm run seed
-   
-4. Start both frontend and backend servers:
+
+5. Start both frontend and backend servers:
 
    npm run dev
 
-5. Open in browser:
+6. Open in browser:
 
    - Frontend: http://localhost:5173  
    - Backend: http://localhost:3000
@@ -55,5 +63,5 @@ backend/   → Express API with Prisma
 ## Notes
 
 - Backend uses SQLite with Prisma ORM  
-- Prisma automatically creates the database and seeds user data in the Docker image  
-- When running without Docker, make sure .env is present in backend and run `npm run prisma:setup`
+- Prisma automatically creates the database and seeds sample user data in the Docker image  
+- When running without Docker, ensure `.env` is present inside `backend/` before running `prisma:setup`
