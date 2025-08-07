@@ -1,1 +1,7 @@
+# Prisma
+/backend/prisma/database.db
+/backend/prisma/*.db
+/backend/prisma/*.sqlite
+/backend/.prisma/
+
 **node_modules
