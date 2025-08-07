@@ -2,7 +2,6 @@ import { Router } from 'express';
 import {
   getOwnGeoInfo,
   getGeoByIP,
-  clearSearchHistory,
   getSearchHistory,
   deleteMultipleHistory
 } from '../controller/geoController.js';
